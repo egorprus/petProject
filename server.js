@@ -7,7 +7,7 @@ import { handleValidationErrors, checkAuth } from './utils/index.js';
 import { PostController, UserController } from "./controllers/index.js";
 
 mongoose
-    .connect('mongodb://REDACTED:REDACTED@REDACTED-HOST:REDACTED')
+    .connect(process.env.MONGODB_URI || 'mongodb://REDACTED:REDACTED@REDACTED-HOST:REDACTED')
     .then(() => console.log('db ok'))
     .catch(err => console.log('err', err ))
 
@@ -42,6 +42,6 @@ app.post('/upload', checkAuth, upload.single('image'), (req,res) => {
         url: `uploads/${req.file.originalname}`
     })
 })
-app.listen(8080, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log('server ok')
 })

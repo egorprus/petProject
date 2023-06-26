@@ -1,4 +1,6 @@
+import { postStatuses } from "../constants.js";
 import PostModel from "../models/Post.js";
+import jwt from "jsonwebtoken";
 
 export const update = async (req, res) => {
   try {
@@ -98,10 +100,24 @@ export const getOne = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const posts = await PostModel.find().populate("user").exec();
+    const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
+    let publicPosts = posts.filter(
+      (item) => item.status !== postStatuses.private
+    );
 
-    res.json(posts);
+    if (token) {
+      const decoded = jwt.verify(token, "secret123");
+      publicPosts = [
+        ...publicPosts,
+        ...posts.filter(
+          (item) =>
+            item.status === postStatuses.private && decoded._id == item.user._id
+        ),
+      ];
+    }
+    res.json(publicPosts);
   } catch (error) {
-    console.log(err);
+    console.log(error);
     res.status(500).json({
       message: "Не удалось получить статьи",
     });

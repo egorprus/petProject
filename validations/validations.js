@@ -20,5 +20,5 @@ export const postCreateValidation = [
   body("text", "Введите текст статьи").isLength({ min: 10 }).isString(),
   body("tags", "Неверный формат тегов").optional().isString(),
   body("imageUrl", "Неверная ссылкан на изображение").optional().isString(),
-  body("status", "Введите статус").optional().isString(),
+  body("status", "Введите статус").optional().isBoolean(),
 ];

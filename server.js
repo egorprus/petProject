@@ -10,10 +10,9 @@ import {
 import { handleValidationErrors, checkAuth } from "./utils/index.js";
 import { PostController, UserController } from "./controllers/index.js";
 
+const urlRailwayMongo = 'mongodb://REDACTED:REDACTED@REDACTED-HOST:REDACTED'
 mongoose
-  .connect(
-    "mongodb://REDACTED:REDACTED@REDACTED-HOST:REDACTED"
-  )
+  .connect(urlRailwayMongo)
   .then(() => console.log("db ok"))
   .catch((err) => console.log("err", err));
 
@@ -41,6 +40,7 @@ app.post(
   UserController.register
 );
 app.get("/auth/me", checkAuth, UserController.getMe);
+app.get("/user/:id", checkAuth, UserController.getUser);
 
 app.post(
   "/posts",

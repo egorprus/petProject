@@ -1,5 +1,6 @@
 import PostModel from "../models/Post.js";
 import jwt from "jsonwebtoken";
+import parseQueryParams from "../utils/parseQueryParams.js";
 
 export const update = async (req, res) => {
   try {
@@ -98,18 +99,20 @@ export const getOne = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate("user").exec();
-    const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
-    let publicPosts = posts.filter((item) => !item.status);
-
-    if (token) {
-      const decoded = jwt.verify(token, "secret123");
-      publicPosts = [
-        ...publicPosts,
-        ...posts.filter((item) => item.status && decoded._id == item.user._id),
-      ];
-    }
-    res.json(publicPosts);
+    const params = parseQueryParams(req.query);
+    const posts = await PostModel.find(params).populate("user").exec();
+    console.log(posts[0]?.user._id);
+    // const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
+    // let publicPosts = posts.filter((item) => !item.status);
+    // console.log(publicPosts);
+    // if (token) {
+    //   const decoded = jwt.verify(token, "secret123");
+    //   publicPosts = [
+    //     ...publicPosts,
+    //     ...posts.filter((item) => item.status && decoded._id == item.user._id),
+    //   ];
+    // }
+    res.json(posts);
   } catch (error) {
     console.log(error);
     res.status(500).json({

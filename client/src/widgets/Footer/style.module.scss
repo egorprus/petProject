@@ -1,0 +1,41 @@
+.footer {
+  width: 100%;
+  border-top: 1px solid #ebebeb;
+  background: #fafafa;
+}
+
+.footerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footerBrandBadge {
+  width: 34px;
+  height: 34px;
+  background: #28ce97;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.footerCopy {
+  font-size: 13px;
+  color: #aaa;
+}

@@ -1,0 +1,166 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 100%;
+  min-height: 100vh;
+	.section {
+		flex: 1;
+		align-self: stretch;
+	}
+	.main {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding-top: 10px;
+		padding-bottom: 20px;
+	}
+	.container {
+		max-width: 1200px;
+		width: 100%;
+	}
+	.nav {
+		display: flex;
+		justify-content: center;
+		&-list {
+			display: flex;
+			&__item {
+				& + & {
+					margin-left: 20px;
+				}
+			}
+			&__btn {
+				color: #46a481;
+				transition: .3s linear;
+				padding: 5px 10px;
+				&:hover {
+					box-shadow: 200px 0 0 0 #46a481 inset;
+					color: #ffffff;
+				}
+			}
+		}
+	}
+
+	.header,
+	.footer {
+		align-self: stretch;
+	}
+}
+
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.posts__item {
+  list-style: none;
+}
+
+.post {
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  }
+}
+
+.post-header {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.post__done-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.post__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.post__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: #e5484d;
+    border-color: #e5484d;
+  }
+}
+
+.post__item-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+}
+
+.post__item-text {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.post--done {
+  .post__item-title,
+  .post__item-text {
+    color: #999;
+    text-decoration: line-through;
+  }
+}
+
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.socials__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+}
+
+.socials__icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+
+  .socials__link:hover & {
+    opacity: 0.85;
+  }
+}

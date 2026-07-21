@@ -1,0 +1,135 @@
+.page {
+  padding: 24px 48px;
+  align-self: stretch;
+  flex: 1;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 28px;
+    color: #111;
+  }
+}
+
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totals {
+  display: flex;
+  gap: 24px;
+  color: #555;
+  font-size: 14px;
+}
+
+.yearGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.yearGroup {
+  margin-bottom: 0;
+}
+
+.yearTitle {
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: #f0fdf8;
+  color: #111;
+  border-radius: 8px;
+  border-left: 3px solid #28ce97;
+  user-select: none;
+  margin-bottom: 8px;
+
+  &:hover {
+    background: #e6faf3;
+  }
+}
+
+.monthGroup {
+  margin-left: 16px;
+  margin-bottom: 8px;
+}
+
+.monthTitleContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.monthExpected {
+  font-size: 13px;
+  font-weight: 400;
+  color: #888;
+}
+
+.monthTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  padding: 4px 8px;
+  border-left: 3px solid #28ce97;
+  user-select: none;
+  margin-bottom: 4px;
+
+  &:hover {
+    border-color: #1fb882;
+    color: #111;
+  }
+}
+
+.list {
+  margin-left: 16px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #ebebeb;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: #28ce97;
+    border-color: #28ce97;
+  }
+}
+
+.itemLabel {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+
+  span {
+    color: #555;
+  }
+}

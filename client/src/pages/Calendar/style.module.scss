@@ -1,0 +1,50 @@
+.dayPopover {
+  min-width: 160px;
+  max-width: 260px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+  color: #1a1a1a;
+}
+
+.dayPopoverDate {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.dayPopoverList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dayPopoverItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dayPopoverDot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.eventDots {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.eventDot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}

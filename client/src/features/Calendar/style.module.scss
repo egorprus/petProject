@@ -1,0 +1,56 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 280px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.eventList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.eventListItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #ebebeb;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.eventListItemActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: #28ce97;
+    border-color: #28ce97;
+  }
+}

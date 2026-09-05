@@ -7,14 +7,15 @@ export default defineConfig({
   envDir: '../',
   server: {
     proxy: {
-      '/auth': 'http://localhost:8080',
-      '/api': 'http://localhost:8080',
-      '/posts': 'http://localhost:8080',
-      '/login': 'http://localhost:8080',
-      '/register': 'http://localhost:8080',
-      '/upload': 'http://localhost:8080',
-      '/bank-records': 'http://localhost:8080',
-      '/calendar-events': 'http://localhost:8080',
+      '/auth': 'http://localhost:3001',
+      '/api': 'http://localhost:3001',
+      '/posts': 'http://localhost:3001',
+      '/login': 'http://localhost:3001',
+      '/register': 'http://localhost:3001',
+      '/upload': 'http://localhost:3001',
+      '/bank-records': 'http://localhost:3001',
+      '/calendar-events': 'http://localhost:3001',
+      '/movie-records': 'http://localhost:3001',
     },
   },
   resolve: {

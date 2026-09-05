@@ -3,6 +3,7 @@ import { useAppDispatch } from "@app/store";
 import { removePost, updatePost } from "@features/posts/postSlice";
 import { postsApi } from "@features/posts/api";
 import { PostActionAdd } from "@features/posts/PostActionAdd";
+import { PostComments } from "./PostComments";
 import { FaTrash } from "react-icons/fa";
 
 interface Props {
@@ -38,6 +39,7 @@ export const Post = ({ post }: Props) => {
           </div>
         </div>
         <p className="post__item-text">{post.text}</p>
+        <PostComments post={post} />
       </div>
     </>
   );

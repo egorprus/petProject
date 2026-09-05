@@ -1,3 +1,4 @@
+import dns from "dns";
 import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
@@ -6,6 +7,10 @@ import path from "path";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { config } from "dotenv";
+
+// VPN adapters can push an unreliable DNS server that times out on SRV lookups
+// used by mongodb+srv:// connection strings, so pin Node's resolver explicitly.
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 config({ path: path.resolve(__dirname, "../.env") });
@@ -20,6 +25,7 @@ import {
   UserController,
   BankController,
   CalendarController,
+  MovieController,
 } from "./controllers/index.js";
 
 mongoose
@@ -71,6 +77,7 @@ app.patch(
   handleValidationErrors,
   PostController.update
 );
+app.post("/posts/:id/comments", checkAuth, PostController.addComment);
 
 app.get("/bank-records", checkAuth, BankController.getAll);
 app.post("/bank-records", checkAuth, BankController.create);
@@ -81,6 +88,11 @@ app.get("/calendar-events", checkAuth, CalendarController.getAll);
 app.post("/calendar-events", checkAuth, CalendarController.create);
 app.patch("/calendar-events/:id", checkAuth, CalendarController.update);
 app.delete("/calendar-events/:id", checkAuth, CalendarController.remove);
+
+app.get("/movie-records", checkAuth, MovieController.getAll);
+app.post("/movie-records", checkAuth, MovieController.create);
+app.patch("/movie-records/:id", checkAuth, MovieController.update);
+app.delete("/movie-records/:id", checkAuth, MovieController.remove);
 
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.json({

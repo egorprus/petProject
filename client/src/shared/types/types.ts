@@ -1,4 +1,4 @@
-import { CalendarEventType } from "./enums";
+import { CalendarEventType, MovieGenre } from "./enums";
 
 export type AuthProviderValue = {
   token: string;
@@ -53,6 +53,16 @@ export interface CalendarEventFormData {
   isRecurring: boolean;
 }
 
+export interface MovieFormData {
+  _id?: string;
+  title: string;
+  genre: MovieGenre;
+  rating?: string;
+  notWatched: boolean;
+  isSeries: boolean;
+  favorite?: boolean;
+}
+
 export type SubmitType = (data: LoginData) => void;
 
 export interface ButtonProps {
@@ -73,6 +83,13 @@ export type PostUser = {
   login: string;
 };
 
+export type PostComment = {
+  _id: string;
+  text: string;
+  user: PostUser;
+  createdAt: string;
+};
+
 export type PostItem = {
   _id: string;
   title: string;
@@ -80,6 +97,7 @@ export type PostItem = {
   user: PostUser;
   viewsCount: number;
   status?: boolean;
+  comments?: PostComment[];
   createdAt: string;
   updatedAt: string;
   __v: number;

@@ -7,24 +7,24 @@ interface Props {
   inputProcessing?: any;
   autoFocus?: boolean;
 }
-export const InputText = ({ register, inputProcessing, autoFocus }: Props) => {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+
+export const TextareaField = ({ register, inputProcessing, autoFocus }: Props) => {
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     let validationValue = e.target.value;
     if (inputProcessing) {
       validationValue = inputProcessing(validationValue);
       e = {
         ...e,
         target: { ...e.target, value: validationValue },
-      } as ChangeEvent<HTMLInputElement>;
+      } as ChangeEvent<HTMLTextAreaElement>;
     }
     register.onChange(e);
   };
 
   return (
-    <input
-      className="field__input"
+    <textarea
+      className="field__textarea"
       {...register}
-      type="text"
       onChange={handleChange}
       autoFocus={autoFocus}
     />

@@ -5,7 +5,7 @@ import { AuthForm } from "@shared/ui/AuthForm/AuthForm";
 import { FieldWrapper } from "@shared/ui/Fields/FieldWrapper";
 import { InputText } from "@shared/ui/Fields/InputText/InputText";
 import { DefaultButton } from "@shared/ui/Buttons/DefaultButtons/DefaultButtons";
-import { ButtonTypes, DefaultUrls, RequiredFields } from "@shared/types/enums";
+import { ButtonTypes, DefaultUrls, RequiredFields, UserStatus } from "@shared/types/enums";
 import { LoginData } from "@shared/types/types";
 import { useDispatch, useSelector } from "react-redux";
 import { startAuth } from "@features/auth/authSlice";
@@ -14,6 +14,7 @@ import { RootState } from "@app/store";
 export const AuthPage = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
+  const status = useSelector((state: RootState) => state.user.status);
   const {
     register,
     handleSubmit,
@@ -40,6 +41,7 @@ export const AuthPage = () => {
     >
       <FieldWrapper name={FIELDS.login.name} label={FIELDS.login.label} errors={errors.login}>
         <InputText
+          autoFocus={true}
           register={register(RequiredFields.login, {
             validate: { ...FIELDS.login.validate },
           })}
@@ -52,7 +54,7 @@ export const AuthPage = () => {
           })}
         />
       </FieldWrapper>
-      <DefaultButton {...FIELDS.signIn} />
+      <DefaultButton {...FIELDS.signIn} disabled={status === UserStatus.loading} />
     </AuthForm>
   );
 };

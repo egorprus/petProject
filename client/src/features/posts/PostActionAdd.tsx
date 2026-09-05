@@ -4,6 +4,7 @@ import { ButtonTypes } from "@shared/types/enums";
 import { PostItem } from "@shared/types/types";
 import { DefaultButton } from "@shared/ui/Buttons/DefaultButtons/DefaultButtons";
 import { InputText } from "@shared/ui/Fields/InputText/InputText";
+import { TextareaField } from "@shared/ui/Fields/Textarea/TextareaField";
 import { FieldWrapper } from "@shared/ui/Fields/FieldWrapper";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -26,7 +27,7 @@ export const PostActionAdd = ({ post }: Props) => {
   const modal = useModal();
   const isEdit = !!post;
   const dispatch = useAppDispatch();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     defaultValues: post ? { title: post.title, text: post.text } : undefined,
   });
 
@@ -60,9 +61,9 @@ export const PostActionAdd = ({ post }: Props) => {
             <InputText register={register("title", { required: true })} />
           </FieldWrapper>
           <FieldWrapper label="Text" name="text" errors={errors.text}>
-            <InputText register={register("text", { required: true })} />
+            <TextareaField register={register("text", { required: true })} />
           </FieldWrapper>
-          <DefaultButton type={ButtonTypes.submit} label={isEdit ? "Save" : "Create"} />
+          <DefaultButton type={ButtonTypes.submit} label={isEdit ? "Save" : "Create"} disabled={isSubmitting} />
         </form>
       </Modal>
     </>

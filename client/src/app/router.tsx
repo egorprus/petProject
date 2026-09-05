@@ -6,6 +6,8 @@ import { RegistrationPage } from "@pages/Registration/RegistrationPage";
 import { MainPage } from "@pages/Main/MainPage";
 import { BankPage } from "@pages/Bank/BankPage";
 import { CalendarPage } from "@pages/Calendar/CalendarPage";
+import { TrainingPage } from "@pages/Training/TrainingPage";
+import { MoviesPage } from "@pages/Movies/MoviesPage";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ export const router = createBrowserRouter([
       {
         path: DefaultUrls.calendar,
         element: <CalendarPage />
+      },
+      {
+        path: DefaultUrls.training,
+        element: <TrainingPage />
+      },
+      {
+        path: DefaultUrls.movies,
+        element: <MoviesPage />
       }
     ],
   },

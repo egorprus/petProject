@@ -12,7 +12,7 @@ import styles from "./style.module.scss";
 import { FieldWrapper } from "@shared/ui/Fields/FieldWrapper";
 
 interface Props {
-  onSubmit: (data: BankFormData) => void;
+  onSubmit: (data: BankFormData) => Promise<void> | void;
   item?: BankFormData;
 }
 
@@ -24,7 +24,7 @@ export const BankActionAdd = ({ onSubmit: onSave, item }: Props) => {
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<BankFormData>({ defaultValues: item });
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(
@@ -43,8 +43,8 @@ export const BankActionAdd = ({ onSubmit: onSave, item }: Props) => {
     setValue(RequiredFields.date, date ? date.toISOString() : '');
   };
 
-  const onSubmit: SubmitHandler<BankFormData> = (data: BankFormData) => {
-    onSave(data);
+  const onSubmit: SubmitHandler<BankFormData> = async (data: BankFormData) => {
+    await onSave(data);
     reset();
     setSelectedDate(null);
     modal.close();
@@ -96,7 +96,7 @@ export const BankActionAdd = ({ onSubmit: onSave, item }: Props) => {
               register={register(RequiredFields.received)}
             />
           </FieldWrapper>
-          <DefaultButton type={ButtonTypes.submit} label={isEdit ? "Save" : "Submit"} />
+          <DefaultButton type={ButtonTypes.submit} label={isEdit ? "Save" : "Submit"} disabled={isSubmitting} />
         </form>
       </Modal>
     </>

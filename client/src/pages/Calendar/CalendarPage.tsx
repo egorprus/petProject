@@ -1,33 +1,12 @@
+import { useLayoutEffect, useRef } from "react";
 import Calendar from "rc-year-calendar";
-import type { CalendarDataSource } from "rc-year-calendar";
 import "js-year-calendar/dist/js-year-calendar.css";
 import { Popover } from "react-tiny-popover";
 import { CalendarEventModal } from "@features/Calendar/CalendarEventModal";
-import { groupEvents, hexToRgba } from "@features/Calendar/calendarUtils";
+import { groupEvents, highlightToday, renderEventDots } from "@features/Calendar/calendarUtils";
 import { useCalendarData } from "@features/Calendar/useCalendarData";
 import { useDayHoverPopover } from "@features/Calendar/useDayHoverPopover";
 import styles from "./style.module.scss";
-
-const renderEventDots = (element: HTMLElement, _date: Date, dayEventsForDate: CalendarDataSource[]) => {
-  const dayCell = element.parentElement ?? element;
-  const primaryColor = String(dayEventsForDate[0]?.color ?? "#9e9e9e");
-  dayCell.style.backgroundColor = hexToRgba(primaryColor, 0.15);
-  dayCell.style.border = `1px solid ${primaryColor}`;
-  dayCell.style.borderRadius = "4px";
-
-  element.querySelector(`.${styles.eventDots}`)?.remove();
-
-  const dots = document.createElement("div");
-  dots.className = styles.eventDots;
-  groupEvents(dayEventsForDate).forEach((group) => {
-    const dot = document.createElement("span");
-    dot.className = styles.eventDot;
-    dot.style.background = group.color;
-    dot.title = group.name;
-    dots.appendChild(dot);
-  });
-  element.appendChild(dots);
-};
 
 export const CalendarPage = () => {
   const {
@@ -46,18 +25,28 @@ export const CalendarPage = () => {
 
   const { hoveredDay, handleDayEnter, handleDayLeave } = useDayHoverPopover();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (containerRef.current) {
+      highlightToday(containerRef.current, year, styles.today);
+    }
+  }, [year, dataSource]);
+
   return (
     <>
-      <Calendar
-        dataSource={dataSource}
-        defaultYear={year}
-        onYearChanged={(e) => setYear(e.currentYear)}
-        onDayClick={(e) => handleDayClick(e.date)}
-        onDayEnter={handleDayEnter}
-        onDayLeave={handleDayLeave}
-        customDataSourceRenderer={renderEventDots}
-        style="custom"
-      />
+      <div ref={containerRef}>
+        <Calendar
+          dataSource={dataSource}
+          defaultYear={year}
+          onYearChanged={(e) => setYear(e.currentYear)}
+          onDayClick={(e) => handleDayClick(e.date)}
+          onDayEnter={handleDayEnter}
+          onDayLeave={handleDayLeave}
+          customDataSourceRenderer={renderEventDots}
+          style="custom"
+        />
+      </div>
       {hoveredDay && (
         <Popover
           isOpen

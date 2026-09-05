@@ -23,7 +23,9 @@ export enum DefaultUrls {
 	default = '/',
 	main = 'content',
 	bank = 'bank',
-	calendar = 'calendar'
+	calendar = 'calendar',
+	training = 'training',
+	movies = 'movies',
 }
 
 export enum TagsListE {
@@ -46,7 +48,12 @@ export enum RequiredFields {
 	endDate = 'endDate',
 	description = 'description',
 	type = 'type',
-	isRecurring = 'isRecurring'
+	isRecurring = 'isRecurring',
+	title = 'title',
+	genre = 'genre',
+	rating = 'rating',
+	notWatched = 'notWatched',
+	isSeries = 'isSeries'
 };
 
 export enum CalendarEventType {
@@ -55,5 +62,19 @@ export enum CalendarEventType {
 	task = 'task',
 	reminder = 'reminder',
 	holiday = 'holiday',
+	other = 'other'
+}
+
+export enum MovieGenre {
+	action = 'action',
+	comedy = 'comedy',
+	drama = 'drama',
+	horror = 'horror',
+	sciFi = 'sciFi',
+	fantasy = 'fantasy',
+	thriller = 'thriller',
+	romance = 'romance',
+	documentary = 'documentary',
+	animation = 'animation',
 	other = 'other'
 }

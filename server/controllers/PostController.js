@@ -115,6 +115,7 @@ export const getOne = async (req, res) => {
       }
     )
       .populate("user")
+      .populate("comments.user")
       .then((doc) => {
         res.json(doc);
       })
@@ -142,6 +143,7 @@ export const getAll = async (req, res) => {
     const posts = await PostModel.find(filter)
       .sort({ createdAt: -1 })
       .populate("user")
+      .populate("comments.user")
       .exec();
 
     res.json(posts);
@@ -149,6 +151,40 @@ export const getAll = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Не удалось получить статьи",
+    });
+  }
+};
+
+export const addComment = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const text = (req.body.text || "").trim();
+
+    if (!text) {
+      return res.status(400).json({
+        message: "Комментарий не может быть пустым",
+      });
+    }
+
+    const post = await PostModel.findOneAndUpdate(
+      { _id: postId },
+      { $push: { comments: { text, user: req.userId } } },
+      { returnDocument: "after" }
+    )
+      .populate("user")
+      .populate("comments.user");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+
+    res.json(post);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось добавить комментарий",
     });
   }
 };

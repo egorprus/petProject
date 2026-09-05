@@ -12,4 +12,7 @@ export const postsApi = {
 
   remove: (id: string): Promise<void> =>
     axiosInstance.delete(`/posts/${id}`).then((r) => r.data),
+
+  addComment: (id: string, text: string): Promise<PostItem> =>
+    axiosInstance.post(`/posts/${id}/comments`, { text }).then((r) => r.data),
 };

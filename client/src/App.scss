@@ -134,6 +134,50 @@
   }
 }
 
+.post__comments {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ebebeb;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.post__comment {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+  color: #555;
+}
+
+.post__comment-author {
+  font-weight: 600;
+  color: #333;
+
+  &::after {
+    content: ":";
+  }
+}
+
+.post__comment-form {
+  display: flex;
+  gap: 8px;
+}
+
+.post__comment-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #28ce97;
+    box-shadow: 0 0 0 3px rgba(40, 206, 151, 0.15);
+  }
+}
+
 .socials {
   display: flex;
   align-items: center;

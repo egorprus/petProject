@@ -21,3 +21,17 @@
     border-color: #28ce97;
   }
 }
+
+.shareInput {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #f9f9f9;
+}
+
+.shareActions {
+  display: flex;
+  gap: 8px;
+}

@@ -15,4 +15,13 @@ export const moviesApi = {
 
   remove: (id: string): Promise<void> =>
     axiosInstance.delete(`/movie-records/${id}`).then((r) => r.data),
+
+  getShareLink: (): Promise<{ shareToken: string }> =>
+    axiosInstance.get("/movie-records/share-link").then((r) => r.data),
+
+  regenerateShareLink: (): Promise<{ shareToken: string }> =>
+    axiosInstance.post("/movie-records/share-link/regenerate").then((r) => r.data),
+
+  getShared: (token: string): Promise<MovieFormData[]> =>
+    axiosInstance.get(`/movie-records/shared/${token}`).then((r) => r.data),
 };

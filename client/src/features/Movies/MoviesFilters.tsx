@@ -3,7 +3,7 @@ import { SelectField } from "@shared/ui/Fields/Select/SelectField";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { GENRE_OPTIONS, RATING_OPTIONS } from "@features/Movies/movieOptions";
-import { MovieFilters, MovieSortBy, MovieTypeFilter, SortDirection } from "@features/Movies/useMoviesData";
+import { MovieFilters, MovieSortBy, MovieTypeFilter, SortDirection } from "@features/Movies/useMovieFilterSort";
 import styles from "@pages/Movies/style.module.scss";
 
 interface Props {

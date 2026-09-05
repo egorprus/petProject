@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema({
     },
     avatarUrl: String,
 	isAdmin: Boolean,
+	movieShareToken: String,
 }, {
     timestamps: true
 });

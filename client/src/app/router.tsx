@@ -8,6 +8,7 @@ import { BankPage } from "@pages/Bank/BankPage";
 import { CalendarPage } from "@pages/Calendar/CalendarPage";
 import { TrainingPage } from "@pages/Training/TrainingPage";
 import { MoviesPage } from "@pages/Movies/MoviesPage";
+import { MoviesSharedPage } from "@pages/MoviesShared/MoviesSharedPage";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
       {
         path: DefaultUrls.movies,
         element: <MoviesPage />
+      },
+      {
+        path: "movies/shared/:token",
+        element: <MoviesSharedPage />
       }
     ],
   },

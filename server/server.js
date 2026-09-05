@@ -94,6 +94,10 @@ app.post("/movie-records", checkAuth, MovieController.create);
 app.patch("/movie-records/:id", checkAuth, MovieController.update);
 app.delete("/movie-records/:id", checkAuth, MovieController.remove);
 
+app.get("/movie-records/share-link", checkAuth, MovieController.getShareLink);
+app.post("/movie-records/share-link/regenerate", checkAuth, MovieController.regenerateShareLink);
+app.get("/movie-records/shared/:token", MovieController.getShared);
+
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.json({
     url: `uploads/${req.file.filename}`,

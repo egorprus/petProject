@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import UserModel from "../models/User.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
@@ -130,5 +131,132 @@ export const getUser = async (req, res) => {
     res.status(500).json({
       message: "Не удалось зарегистрироваться",
     });
+  }
+};
+
+export const updateMe = async (req, res) => {
+  try {
+    const set = {};
+    const unset = {};
+    if (req.body.fullName !== undefined) {
+      set.fullName = req.body.fullName;
+    }
+    if (req.body.email !== undefined) {
+      if (req.body.email) {
+        set.email = req.body.email;
+      } else {
+        unset.email = "";
+      }
+    }
+
+    const user = await UserModel.findByIdAndUpdate(
+      req.userId,
+      { $set: set, $unset: unset },
+      { new: true, runValidators: true }
+    );
+    if (!user) {
+      return res.status(404).json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    const { passwordHash, ...userData } = user._doc;
+    res.json(userData);
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        message: "Почта уже используется",
+      });
+    }
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось обновить профиль",
+    });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId).select("+passwordHash");
+    if (!user) {
+      return res.status(404).json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    const isValidPass = await bcrypt.compare(
+      req.body.currentPassword,
+      user.passwordHash
+    );
+    if (!isValidPass) {
+      return res.status(400).json({
+        message: "Неверный текущий пароль",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(req.body.newPassword, salt);
+    await user.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось сменить пароль",
+    });
+  }
+};
+
+export const uploadAvatar = async (req, res) => {
+  try {
+    const user = await UserModel.findByIdAndUpdate(
+      req.userId,
+      {
+        avatarData: req.file.buffer,
+        avatarContentType: req.file.mimetype,
+        // ?v= changes on every upload so browsers drop the cached old image
+        avatarUrl: `/user/${req.userId}/avatar?v=${Date.now()}`,
+      },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    const { passwordHash, ...userData } = user._doc;
+    res.json(userData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось загрузить аватар",
+    });
+  }
+};
+
+// Public on purpose: <img> tags can't send the Authorization header.
+export const getAvatar = async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.sendStatus(404);
+    }
+
+    const user = await UserModel.findById(req.params.id).select(
+      "+avatarData +avatarContentType"
+    );
+    if (!user?.avatarData) {
+      return res.sendStatus(404);
+    }
+
+    res.set({
+      "Content-Type": user.avatarContentType,
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "X-Content-Type-Options": "nosniff",
+    });
+    res.send(user.avatarData);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 };

@@ -19,6 +19,8 @@ export interface UserData {
   _id: string;
   fullName: string;
   login: string;
+  email?: string;
+  avatarUrl?: string;
   createdAt: string;
   updatedAt: string;
   token: string;
@@ -34,6 +36,16 @@ export interface RegistrationData {
   login: string;
   password: string;
   fullName: string;
+}
+
+export interface ProfileFormData {
+  fullName: string;
+  email: string;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
 }
 
 export interface BankFormData {

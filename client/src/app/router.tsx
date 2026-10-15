@@ -9,6 +9,7 @@ import { CalendarPage } from "@pages/Calendar/CalendarPage";
 import { TrainingPage } from "@pages/Training/TrainingPage";
 import { MoviesPage } from "@pages/Movies/MoviesPage";
 import { MoviesSharedPage } from "@pages/MoviesShared/MoviesSharedPage";
+import { ProfilePage } from "@pages/Profile/ProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: DefaultUrls.movies,
         element: <MoviesPage />
+      },
+      {
+        path: DefaultUrls.profile,
+        element: <ProfilePage />
       },
       {
         path: "movies/shared/:token",

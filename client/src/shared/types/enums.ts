@@ -26,6 +26,7 @@ export enum DefaultUrls {
 	calendar = 'calendar',
 	training = 'training',
 	movies = 'movies',
+	profile = 'profile',
 }
 
 export enum TagsListE {
@@ -53,7 +54,10 @@ export enum RequiredFields {
 	genre = 'genre',
 	rating = 'rating',
 	notWatched = 'notWatched',
-	isSeries = 'isSeries'
+	isSeries = 'isSeries',
+	email = 'email',
+	currentPassword = 'currentPassword',
+	newPassword = 'newPassword'
 };
 
 export enum CalendarEventType {

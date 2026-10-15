@@ -18,8 +18,14 @@ import {
   registerValidation,
   loginValidation,
   postCreateValidation,
+  updateMeValidation,
+  changePasswordValidation,
 } from "./validations/validations.js";
-import { handleValidationErrors, checkAuth } from "./utils/index.js";
+import {
+  handleValidationErrors,
+  checkAuth,
+  handleAvatarUpload,
+} from "./utils/index.js";
 import {
   PostController,
   UserController,
@@ -58,7 +64,23 @@ app.post(
   UserController.register
 );
 app.get("/auth/me", checkAuth, UserController.getMe);
+app.patch(
+  "/auth/me",
+  checkAuth,
+  updateMeValidation,
+  handleValidationErrors,
+  UserController.updateMe
+);
+app.patch(
+  "/auth/me/password",
+  checkAuth,
+  changePasswordValidation,
+  handleValidationErrors,
+  UserController.changePassword
+);
+app.post("/auth/me/avatar", checkAuth, handleAvatarUpload, UserController.uploadAvatar);
 app.get("/user/:id", checkAuth, UserController.getUser);
+app.get("/user/:id/avatar", UserController.getAvatar);
 
 app.post(
   "/posts",

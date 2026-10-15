@@ -35,6 +35,11 @@ const userSlice = createSlice({
         localStorage.setItem("token", action.payload.token);
       }
     },
+    updateUser: (state, action: PayloadAction<Partial<UserData>>) => {
+      if (state.data) {
+        state.data = { ...state.data, ...action.payload };
+      }
+    },
     startRegistration: (state, _action: PayloadAction<RegistrationData>) => {
       state.status = UserStatus.loading;
     },
@@ -48,5 +53,11 @@ const userSlice = createSlice({
 
 export const userReducer = userSlice.reducer;
 
-export const { logout, startAuth, successAuth, startRegistration, failedAuth } =
-  userSlice.actions;
+export const {
+  logout,
+  startAuth,
+  successAuth,
+  updateUser,
+  startRegistration,
+  failedAuth,
+} = userSlice.actions;

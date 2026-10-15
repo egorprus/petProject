@@ -5,7 +5,7 @@ import { FieldWrapper } from "@shared/ui/Fields/FieldWrapper";
 import { AuthForm } from "@shared/ui/AuthForm/AuthForm";
 import { DefaultButton } from "@shared/ui/Buttons/DefaultButtons/DefaultButtons";
 import { minLength, required } from "@shared/utils/validate";
-import { ButtonTypes, DefaultUrls, RequiredFields } from "@shared/types/enums";
+import { ButtonTypes, DefaultUrls, RequiredFields, UserStatus } from "@shared/types/enums";
 import { useAppDispatch } from "@app/store";
 import { useSelector } from "react-redux";
 import { RootState } from "@app/store";
@@ -15,6 +15,7 @@ import { RegistrationData } from "@shared/types/types";
 export const RegistrationPage = () => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
+  const status = useSelector((state: RootState) => state.user.status);
   const {
     register,
     handleSubmit,
@@ -41,6 +42,7 @@ export const RegistrationPage = () => {
     >
       <FieldWrapper name={FIELDS.login.name} label={FIELDS.login.label} errors={errors.login}>
         <InputText
+          autoFocus={true}
           register={register(RequiredFields.login, {
             validate: { ...FIELDS.login.validate },
           })}
@@ -60,7 +62,7 @@ export const RegistrationPage = () => {
           })}
         />
       </FieldWrapper>
-      <DefaultButton {...FIELDS.signIn} type={ButtonTypes.submit} />
+      <DefaultButton {...FIELDS.signIn} type={ButtonTypes.submit} disabled={status === UserStatus.loading} />
     </AuthForm>
   );
 };

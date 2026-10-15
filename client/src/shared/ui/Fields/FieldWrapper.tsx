@@ -25,6 +25,7 @@ export const FieldWrapper = ({name, label, children, errors}: Props) => {
           )}
           {errors.type === "min" && <p>minimum</p>}
           {errors.type === "required" && <p>obyazatelno</p>}
+          {errors.type === "email" && <p>invalid email</p>}
         </div>
       )}
     </div>

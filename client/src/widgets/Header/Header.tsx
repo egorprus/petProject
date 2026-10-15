@@ -9,7 +9,9 @@ import styles from "./style.module.scss";
 const NAV_LINKS = [
   { name: "Content", path: `/${DefaultUrls.main}` },
   { name: "Bank", path: `/${DefaultUrls.bank}` },
-  { name: "Calendar", path: `/${DefaultUrls.calendar}`}
+  { name: "Calendar", path: `/${DefaultUrls.calendar}`},
+  { name: "Training", path: `/${DefaultUrls.training}`},
+  { name: "Movies", path: `/${DefaultUrls.movies}`},
 ];
 
 export const Header = () => {

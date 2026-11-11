@@ -3,6 +3,30 @@ import UserModel from "../models/User.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { PAGES } from "../constants/pages.js";
+
+// GET /pages — all pages (for settings); ?visible=true — only the ones the user hasn't hidden
+export const getPages = async (req, res) => {
+  try {
+    if (req.query.visible !== "true") {
+      return res.json(PAGES);
+    }
+
+    const user = await UserModel.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    res.json(PAGES.filter((page) => !user.hiddenPage.includes(page.key)));
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить список страниц",
+    });
+  }
+};
 
 export const register = async (req, res) => {
   try {
@@ -148,11 +172,14 @@ export const updateMe = async (req, res) => {
         unset.email = "";
       }
     }
+    if (req.body.hiddenPage !== undefined) {
+      set.hiddenPage = [...new Set(req.body.hiddenPage)];
+    }
 
     const user = await UserModel.findByIdAndUpdate(
       req.userId,
       { $set: set, $unset: unset },
-      { new: true, runValidators: true }
+      { returnDocument: "after", runValidators: true }
     );
     if (!user) {
       return res.status(404).json({
@@ -217,7 +244,7 @@ export const uploadAvatar = async (req, res) => {
         // ?v= changes on every upload so browsers drop the cached old image
         avatarUrl: `/user/${req.userId}/avatar?v=${Date.now()}`,
       },
-      { new: true }
+      { returnDocument: "after" }
     );
     if (!user) {
       return res.status(404).json({

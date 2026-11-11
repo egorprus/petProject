@@ -66,7 +66,7 @@ export const regenerateShareLink = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.userId,
       { movieShareToken: crypto.randomUUID() },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     if (!user) {

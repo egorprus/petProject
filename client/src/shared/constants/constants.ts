@@ -1,9 +1,4 @@
-import { DefaultUrls } from "../types/enums";
-import { MonthType, NavItem } from "../types/types";
-
-export const NAV_LIST: NavItem[] = [
-  { name: "Bank", path: `/${DefaultUrls.bank}` },
-];
+import { MonthType } from "../types/types";
 
 export const MONTH: MonthType[] = [
   {

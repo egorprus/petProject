@@ -36,6 +36,52 @@
   display: none;
 }
 
+.checkboxList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  :global(.field__checkbox-label) {
+    padding: 12px 14px;
+    border: 1px solid #ebebeb;
+    border-radius: 10px;
+    font-weight: 500;
+    color: #111;
+    transition: border-color 0.15s, background-color 0.15s;
+
+    &:hover {
+      border-color: #28ce97;
+    }
+
+    &:has(:checked) {
+      background: rgba(40, 206, 151, 0.06);
+      border-color: rgba(40, 206, 151, 0.4);
+    }
+  }
+
+  // Toggled but not saved yet
+  .changed :global(.field__checkbox-label) {
+    border-style: dashed;
+    border-color: #f5a524;
+
+    &::after {
+      content: "не сохранено";
+      margin-left: auto;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(245, 165, 36, 0.14);
+      color: #b5760f;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+}
+
+.unsaved {
+  font-size: 13px;
+  color: #b5760f;
+}
+
 .error {
   font-size: 13px;
   color: #e5484d;

@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import axiosInstance from "@shared/api/axios";
-import { ChangePasswordData, ProfileFormData, UserData } from "@shared/types/types";
+import { ChangePasswordData, PageItem, ProfileFormData, UserData } from "@shared/types/types";
 
 export const profileApi = {
   updateMe: (data: ProfileFormData): Promise<UserData> =>
@@ -8,6 +8,15 @@ export const profileApi = {
 
   changePassword: (data: ChangePasswordData): Promise<void> =>
     axiosInstance.patch("/auth/me/password", data).then((r) => r.data),
+
+  /** visible=true — only pages the user hasn't hidden, otherwise all pages */
+  getPages: (visible = false): Promise<PageItem[]> =>
+    axiosInstance
+      .get("/pages", { params: visible ? { visible: true } : undefined })
+      .then((r) => r.data),
+
+  updateHiddenPages: (hiddenPage: string[]): Promise<UserData> =>
+    axiosInstance.patch("/auth/me", { hiddenPage }).then((r) => r.data),
 
   uploadAvatar: (file: File): Promise<UserData> => {
     const formData = new FormData();

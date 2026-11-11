@@ -1,22 +1,31 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "@features/auth/useAuth";
 import { Profile } from "./components/Profile";
 import { useSelector } from "react-redux";
 import { RootState } from "@app/store";
-import { DefaultUrls, UserStatus } from "@shared/types/enums";
+import { UserStatus } from "@shared/types/enums";
+import { NavItem } from "@shared/types/types";
 import { Navigation } from "@shared/ui/Navigation/Navigation";
+import { profileApi } from "@features/Profile/api";
 import styles from "./style.module.scss";
-
-const NAV_LINKS = [
-  { name: "Content", path: `/${DefaultUrls.main}` },
-  { name: "Bank", path: `/${DefaultUrls.bank}` },
-  { name: "Calendar", path: `/${DefaultUrls.calendar}`},
-  { name: "Training", path: `/${DefaultUrls.training}`},
-  { name: "Movies", path: `/${DefaultUrls.movies}`},
-];
 
 export const Header = () => {
   const { onLogout } = useAuth();
-  const { status } = useSelector((state: RootState) => state.user);
+  const { status, data } = useSelector((state: RootState) => state.user);
+  const [navList, setNavList] = useState<NavItem[]>([]);
+
+  // Refetch when settings change hiddenPage (updateUser in the store)
+  const hiddenKey = data?.hiddenPage?.join(",");
+
+  useEffect(() => {
+    if (status !== UserStatus.success) {
+      return;
+    }
+    profileApi
+      .getPages(true)
+      .then((pages) => setNavList(pages.map(({ key, name }) => ({ name, path: `/${key}` }))))
+      .catch(() => setNavList([]));
+  }, [status, hiddenKey]);
 
   return (
     <header className={styles.header}>
@@ -27,7 +36,7 @@ export const Header = () => {
         </a>
         {status === UserStatus.success && (
           <div className={styles.headerNav}>
-            <Navigation navigationList={NAV_LINKS} />
+            <Navigation navigationList={navList} />
           </div>
         )}
         <Profile onLogout={onLogout} />

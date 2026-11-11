@@ -14,12 +14,18 @@ export type NavItem = {
   path: string;
 };
 
+export type PageItem = {
+  key: string;
+  name: string;
+};
+
 /** Interface user data */
 export interface UserData {
   _id: string;
   fullName: string;
   login: string;
   email?: string;
+  hiddenPage: string[];
   avatarUrl?: string;
   createdAt: string;
   updatedAt: string;

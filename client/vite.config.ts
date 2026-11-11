@@ -19,6 +19,7 @@ export default defineConfig({
       // '/calendar-events': { target: 'https://petproject-rglq.onrender.com', changeOrigin: true },
       // '/movie-records': { target: 'https://petproject-rglq.onrender.com', changeOrigin: true },
       // '/user': { target: 'https://petproject-rglq.onrender.com', changeOrigin: true },
+      // '/pages': { target: 'https://petproject-rglq.onrender.com', changeOrigin: true },
       '/auth': 'http://localhost:3001',
       '/api': 'http://localhost:3001',
       '/posts': 'http://localhost:3001',
@@ -29,6 +30,7 @@ export default defineConfig({
       '/calendar-events': 'http://localhost:3001',
       '/movie-records': 'http://localhost:3001',
       '/user': 'http://localhost:3001',
+      '/pages': 'http://localhost:3001',
     },
   },
   resolve: {
@@ -37,8 +39,7 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@widgets': path.resolve(__dirname, 'src/widgets'),
       '@features': path.resolve(__dirname, 'src/features'),
-      '@shared': path.resolve(__dirname, 'src/shared'),
-    },
+      '@shared': path.resolve(__dirname, 'src/shared'),    },
   },
   build: {
     outDir: path.resolve(__dirname, 'dist'),

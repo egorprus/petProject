@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { RootState } from "@app/store";
 import { AvatarUpload } from "@features/Profile/AvatarUpload";
 import { ChangePasswordForm } from "@features/Profile/ChangePasswordForm";
+import { PagesSettings } from "@features/Profile/PagesSettings";
 import { ProfileInfoForm } from "@features/Profile/ProfileInfoForm";
 import { DefaultUrls } from "@shared/types/enums";
 import styles from "./style.module.scss";
@@ -31,6 +32,7 @@ export const ProfilePage = () => {
       <div className={styles.forms}>
         <ProfileInfoForm user={user} />
         <ChangePasswordForm />
+        <PagesSettings user={user} />
       </div>
     </section>
   );

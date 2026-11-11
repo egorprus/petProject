@@ -54,6 +54,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+// Express 5 leaves req.body undefined for requests without a JSON body; controllers expect an object.
+app.use((req, _, next) => {
+  req.body ??= {};
+  next();
+});
 app.use(cors());
 
 app.post("/login", handleValidationErrors, UserController.login);
@@ -79,6 +84,7 @@ app.patch(
   UserController.changePassword
 );
 app.post("/auth/me/avatar", checkAuth, handleAvatarUpload, UserController.uploadAvatar);
+app.get("/pages", checkAuth, UserController.getPages);
 app.get("/user/:id", checkAuth, UserController.getUser);
 app.get("/user/:id/avatar", UserController.getAvatar);
 
@@ -127,10 +133,12 @@ app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
-app.get("*", (_, res) => {
+app.get("/{*splat}", (_, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
-app.listen(process.env.PORT || 8080, () => {
+app.listen(process.env.PORT || 8080, (err) => {
+  // Express 5 calls this callback with the error (e.g. port in use) instead of throwing
+  if (err) throw err;
   console.log("server ok");
 });

@@ -21,7 +21,7 @@ export enum DefaultUrls {
 	auth = 'auth',
 	registration = 'registration',
 	default = '/',
-	main = 'content',
+	main = 'blog',
 	bank = 'bank',
 	calendar = 'calendar',
 	training = 'training',

@@ -113,8 +113,6 @@ export type PostItem = {
   title: string;
   text: string;
   user: PostUser;
-  viewsCount: number;
-  status?: boolean;
   comments?: PostComment[];
   createdAt: string;
   updatedAt: string;

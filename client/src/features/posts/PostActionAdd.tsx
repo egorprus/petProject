@@ -45,7 +45,7 @@ export const PostActionAdd = ({ post }: Props) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     if (isEdit) {
-      await updatePost({ id: post._id, ...data, status: post.status }).unwrap();
+      await updatePost({ id: post._id, ...data }).unwrap();
     } else {
       await createPost({ ...data });
     }

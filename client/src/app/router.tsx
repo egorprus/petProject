@@ -4,6 +4,7 @@ import { DefaultUrls } from "@shared/types/enums";
 import { AuthPage } from "@pages/Auth/AuthPage";
 import { RegistrationPage } from "@pages/Registration/RegistrationPage";
 import { MainPage } from "@pages/Main/MainPage";
+import { TopicPage } from "@pages/Topic/TopicPage";
 import { BankPage } from "@pages/Bank/BankPage";
 import { CalendarPage } from "@pages/Calendar/CalendarPage";
 import { TrainingPage } from "@pages/Training/TrainingPage";
@@ -30,6 +31,14 @@ export const router = createBrowserRouter([
         element: (
           <HiddenPageGuard page={DefaultUrls.main}>
             <MainPage />
+          </HiddenPageGuard>
+        ),
+      },
+      {
+        path: `${DefaultUrls.main}/:id`,
+        element: (
+          <HiddenPageGuard page={DefaultUrls.main}>
+            <TopicPage />
           </HiddenPageGuard>
         ),
       },

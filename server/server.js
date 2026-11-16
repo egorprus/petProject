@@ -106,6 +106,8 @@ app.patch(
   PostController.update
 );
 app.post("/posts/:id/comments", checkAuth, PostController.addComment);
+app.patch("/posts/:id/comments/:commentId", checkAuth, PostController.updateComment);
+app.delete("/posts/:id/comments/:commentId", checkAuth, PostController.removeComment);
 
 app.get("/bank-records", checkAuth, BankController.getAll);
 app.post("/bank-records", checkAuth, BankController.create);

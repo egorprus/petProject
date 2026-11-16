@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
 import { UserStatus } from "@shared/types/enums";
-import { LoginData, RegistrationData, UserData } from "@shared/types/types";
+import { UserData } from "@shared/types/types";
+import { authApi } from "./authApi";
 
 interface InitType {
   data: UserData | null;
@@ -10,7 +11,9 @@ interface InitType {
 
 const initialState: InitType = {
   data: null,
-  status: localStorage.getItem("token") ? UserStatus.loading : UserStatus.notAuth,
+  status: localStorage.getItem("token")
+    ? UserStatus.loading
+    : UserStatus.notAuth,
   isAuthenticated: false,
 };
 
@@ -24,40 +27,48 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem("token");
     },
-    startAuth: (state, _action: PayloadAction<LoginData | string>) => {
-      state.status = UserStatus.loading;
-    },
-    successAuth: (state, action) => {
-      state.data = action.payload;
-      state.status = UserStatus.success;
-      state.isAuthenticated = true;
-      if (action.payload.token) {
-        localStorage.setItem("token", action.payload.token);
-      }
-    },
     updateUser: (state, action: PayloadAction<Partial<UserData>>) => {
       if (state.data) {
         state.data = { ...state.data, ...action.payload };
       }
     },
-    startRegistration: (state, _action: PayloadAction<RegistrationData>) => {
-      state.status = UserStatus.loading;
-    },
-    failedAuth: (state) => {
-      state.status = UserStatus.notAuth;
-      state.data = null;
-      state.isAuthenticated = false;
-    },
+  },
+  extraReducers: (builder) => {
+    const { login, register, getMe } = authApi.endpoints;
+    builder
+      .addMatcher(
+        isAnyOf(login.matchPending, register.matchPending, getMe.matchPending),
+        (s) => {
+          s.status = UserStatus.loading;
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          login.matchFulfilled,
+          register.matchFulfilled,
+          getMe.matchFulfilled,
+        ),
+        (s, { payload }) => {
+          s.data = payload;
+          s.status = UserStatus.success;
+          s.isAuthenticated = true;
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          login.matchRejected,
+          register.matchRejected,
+          getMe.matchRejected,
+        ),
+        (s) => {
+          s.data = null;
+          s.status = UserStatus.notAuth;
+          s.isAuthenticated = false;
+        },
+      );
   },
 });
 
 export const userReducer = userSlice.reducer;
 
-export const {
-  logout,
-  startAuth,
-  successAuth,
-  updateUser,
-  startRegistration,
-  failedAuth,
-} = userSlice.actions;
+export const { logout, updateUser } = userSlice.actions;

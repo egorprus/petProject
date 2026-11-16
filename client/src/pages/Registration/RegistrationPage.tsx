@@ -5,32 +5,34 @@ import { FieldWrapper } from "@shared/ui/Fields/FieldWrapper";
 import { AuthForm } from "@shared/ui/AuthForm/AuthForm";
 import { DefaultButton } from "@shared/ui/Buttons/DefaultButtons/DefaultButtons";
 import { minLength, required } from "@shared/utils/validate";
-import { ButtonTypes, DefaultUrls, RequiredFields, UserStatus } from "@shared/types/enums";
-import { useAppDispatch } from "@app/store";
+import { ButtonTypes, DefaultUrls, RequiredFields } from "@shared/types/enums";
 import { useSelector } from "react-redux";
 import { RootState } from "@app/store";
-import { startRegistration } from "@features/auth/authSlice";
 import { RegistrationData } from "@shared/types/types";
+import { useRegisterMutation } from "@features/auth/authApi";
 
 export const RegistrationPage = () => {
-  const dispatch = useAppDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
-  const status = useSelector((state: RootState) => state.user.status);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated,
+  );
+  const [registration, { isLoading }] = useRegisterMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegistrationData>();
 
-  const onSubmit: SubmitHandler<RegistrationData> = (data: RegistrationData) => {
-    dispatch(startRegistration(data));
+  const onSubmit: SubmitHandler<RegistrationData> = (
+    data: RegistrationData,
+  ) => {
+    registration(data);
   };
 
   if (isAuthenticated) {
     return <Navigate to={`/${DefaultUrls.main}`} replace />;
   }
 
-	return (
+  return (
     <AuthForm
       onSubmit={handleSubmit(onSubmit)}
       title="Регистрация"
@@ -40,7 +42,11 @@ export const RegistrationPage = () => {
         </>
       }
     >
-      <FieldWrapper name={FIELDS.login.name} label={FIELDS.login.label} errors={errors.login}>
+      <FieldWrapper
+        name={FIELDS.login.name}
+        label={FIELDS.login.label}
+        errors={errors.login}
+      >
         <InputText
           autoFocus={true}
           register={register(RequiredFields.login, {
@@ -48,21 +54,33 @@ export const RegistrationPage = () => {
           })}
         />
       </FieldWrapper>
-      <FieldWrapper name={FIELDS.fullName.name} label={FIELDS.fullName.label} errors={errors.fullName}>
+      <FieldWrapper
+        name={FIELDS.fullName.name}
+        label={FIELDS.fullName.label}
+        errors={errors.fullName}
+      >
         <InputText
           register={register(RequiredFields.fullName, {
             validate: { ...FIELDS.fullName.validate },
           })}
         />
       </FieldWrapper>
-      <FieldWrapper name={FIELDS.password.name} label={FIELDS.password.label} errors={errors.password}>
+      <FieldWrapper
+        name={FIELDS.password.name}
+        label={FIELDS.password.label}
+        errors={errors.password}
+      >
         <InputText
           register={register(RequiredFields.password, {
             validate: { ...FIELDS.password.validate },
           })}
         />
       </FieldWrapper>
-      <DefaultButton {...FIELDS.signIn} type={ButtonTypes.submit} disabled={status === UserStatus.loading} />
+      <DefaultButton
+        {...FIELDS.signIn}
+        type={ButtonTypes.submit}
+        disabled={isLoading}
+      />
     </AuthForm>
   );
 };

@@ -1,11 +1,13 @@
 import { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout, startAuth } from "./authSlice";
+import { useSelector } from "react-redux";
+import { logout } from "./authSlice";
 import { AuthProviderValue } from "@shared/types/types";
 import { DefaultUrls } from "@shared/types/enums";
-import { RootState } from "@app/store";
+import { RootState, useAppDispatch } from "@app/store";
+import { authApi } from "./authApi";
+import { baseApi } from "@shared/api/baseApi";
 
 interface Props {
   children: ReactNode;
@@ -13,16 +15,17 @@ interface Props {
 
 export const AuthProvider = ({ children }: Props) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { data } = useSelector((state: RootState) => state.user);
 
   const handleLogin = (token: string) => {
     localStorage.setItem("token", token);
-    dispatch(startAuth(""));
+    dispatch(authApi.endpoints.getMe.initiate());
   };
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(baseApi.util.resetApiState());
     navigate(`/${DefaultUrls.auth}`);
   };
 

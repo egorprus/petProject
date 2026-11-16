@@ -1,22 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import { postReducer } from "@features/posts/postSlice";
 import { userReducer } from "@features/auth/authSlice";
-import createSagaMiddleware from "redux-saga";
-import { rootWatcher } from "./rootSaga";
-
-const sagaMiddleware = createSagaMiddleware();
+import { baseApi } from "@shared/api/baseApi";
 
 const store = configureStore({
   reducer: {
-    post: postReducer,
     user: userReducer,
+    [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
-
-sagaMiddleware.run(rootWatcher);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

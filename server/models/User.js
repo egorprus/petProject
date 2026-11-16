@@ -15,8 +15,28 @@ const UserSchema = new mongoose.Schema({
         required: true,
         select: false
     },
+    email: {
+        type: String,
+        unique: true,
+        sparse: true,
+        trim: true,
+        lowercase: true
+    },
     avatarUrl: String,
+    avatarData: {
+        type: Buffer,
+        select: false
+    },
+    avatarContentType: {
+        type: String,
+        select: false
+    },
 	isAdmin: Boolean,
+	movieShareToken: String,
+    hiddenPage: {
+        type: [String],
+        default: []
+    },
 }, {
     timestamps: true
 });

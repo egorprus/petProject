@@ -7,13 +7,15 @@ import { InputText } from "@shared/ui/Fields/InputText/InputText";
 import { DefaultButton } from "@shared/ui/Buttons/DefaultButtons/DefaultButtons";
 import { ButtonTypes, DefaultUrls, RequiredFields } from "@shared/types/enums";
 import { LoginData } from "@shared/types/types";
-import { useDispatch, useSelector } from "react-redux";
-import { startAuth } from "@features/auth/authSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "@app/store";
+import { useLoginMutation } from "@features/auth/authApi";
 
 export const AuthPage = () => {
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated,
+  );
+  const [login, { isLoading }] = useLoginMutation();
   const {
     register,
     handleSubmit,
@@ -21,14 +23,14 @@ export const AuthPage = () => {
   } = useForm<LoginData>();
 
   const onSubmit: SubmitHandler<LoginData> = (credential: LoginData) => {
-    dispatch(startAuth(credential));
+    login(credential);
   };
 
   if (isAuthenticated) {
     return <Navigate to={`/${DefaultUrls.main}`} replace />;
   }
 
-	return (
+  return (
     <AuthForm
       onSubmit={handleSubmit(onSubmit)}
       title="Авторизация"
@@ -38,21 +40,30 @@ export const AuthPage = () => {
         </>
       }
     >
-      <FieldWrapper name={FIELDS.login.name} label={FIELDS.login.label} errors={errors.login}>
+      <FieldWrapper
+        name={FIELDS.login.name}
+        label={FIELDS.login.label}
+        errors={errors.login}
+      >
         <InputText
+          autoFocus={true}
           register={register(RequiredFields.login, {
             validate: { ...FIELDS.login.validate },
           })}
         />
       </FieldWrapper>
-      <FieldWrapper name={FIELDS.password.name} label={FIELDS.password.label} errors={errors.password}>
+      <FieldWrapper
+        name={FIELDS.password.name}
+        label={FIELDS.password.label}
+        errors={errors.password}
+      >
         <InputText
           register={register(RequiredFields.password, {
             validate: { ...FIELDS.password.validate },
           })}
         />
       </FieldWrapper>
-      <DefaultButton {...FIELDS.signIn} />
+      <DefaultButton {...FIELDS.signIn} disabled={isLoading} />
     </AuthForm>
   );
 };

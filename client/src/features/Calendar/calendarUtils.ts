@@ -1,6 +1,7 @@
 import type { CalendarDataSource } from "rc-year-calendar";
 import { CalendarEventType } from "@shared/types/enums";
 import { CalendarEventFormData } from "@shared/types/types";
+import styles from "@pages/Calendar/style.module.scss";
 
 export const TYPE_COLORS: Record<CalendarEventType, string> = {
   [CalendarEventType.birthday]: "#4285f4",
@@ -52,6 +53,47 @@ export const hexToRgba = (hex: string, alpha: number) => {
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+export const highlightToday = (container: HTMLElement, year: number, className: string) => {
+  container.querySelectorAll(`.${className}`).forEach((el) => el.classList.remove(className));
+
+  const today = new Date();
+  if (today.getFullYear() !== year) return;
+
+  const monthContainer = container.querySelector(`.month-container[data-month-id="${today.getMonth()}"]`);
+  if (!monthContainer) return;
+
+  const todayContent = Array.from(monthContainer.querySelectorAll(".day-content")).find((el) => {
+    const dayCell = el.closest(".day");
+    return (
+      el.textContent === String(today.getDate()) &&
+      !dayCell?.classList.contains("old") &&
+      !dayCell?.classList.contains("new")
+    );
+  });
+  todayContent?.closest(".day")?.classList.add(className);
+};
+
+export const renderEventDots = (element: HTMLElement, _date: Date, dayEventsForDate: CalendarDataSource[]) => {
+  const dayCell = element.parentElement ?? element;
+  const primaryColor = String(dayEventsForDate[0]?.color ?? "#9e9e9e");
+  dayCell.style.backgroundColor = hexToRgba(primaryColor, 0.15);
+  dayCell.style.border = `1px solid ${primaryColor}`;
+  dayCell.style.borderRadius = "4px";
+
+  element.querySelector(`.${styles.eventDots}`)?.remove();
+
+  const dots = document.createElement("div");
+  dots.className = styles.eventDots;
+  groupEvents(dayEventsForDate).forEach((group) => {
+    const dot = document.createElement("span");
+    dot.className = styles.eventDot;
+    dot.style.background = group.color;
+    dot.title = group.name;
+    dots.appendChild(dot);
+  });
+  element.appendChild(dots);
 };
 
 export const mapEventsToDataSource = (events: CalendarEventFormData[]): CalendarDataSource[] =>

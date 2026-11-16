@@ -1,5 +1,4 @@
 import PostModel from "../models/Post.js";
-import jwt from "jsonwebtoken";
 
 export const update = async (req, res) => {
   try {
@@ -27,7 +26,6 @@ export const update = async (req, res) => {
         text: req.body.text,
         imageUrl: req.body.imageUrl,
         tags: req.body.tags,
-        status: req.body.status,
       }
     );
 
@@ -74,74 +72,33 @@ export const remove = async (req, res) => {
   }
 };
 
-const getRequesterId = (req) => {
-  const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
-  if (!token) {
-    return null;
-  }
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET)._id;
-  } catch (error) {
-    return null;
-  }
-};
-
 export const getOne = async (req, res) => {
   try {
-    const postId = req.params.id;
-    const existing = await PostModel.findById(postId);
-
-    if (!existing) {
-      return res.status(404).json({
-        message: "Статья не найдена",
-      });
-    }
-
-    if (existing.status && existing.user.toString() !== getRequesterId(req)) {
-      return res.status(404).json({
-        message: "Статья не найдена",
-      });
-    }
-
-    PostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $inc: { viewsCount: 1 },
-      },
-      {
-        returnDocument: "after",
-      }
-    )
+    const post = await PostModel.findById(req.params.id)
       .populate("user")
-      .then((doc) => {
-        res.json(doc);
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json({
-          message: "Не удалось вернуть статью",
-        });
+      .populate("comments.user");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Статья не найдена",
       });
+    }
+
+    res.json(post);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось получить статьи",
+      message: "Не удалось получить статью",
     });
   }
 };
 
 export const getAll = async (req, res) => {
   try {
-    const requesterId = getRequesterId(req);
-    const filter = requesterId
-      ? { $or: [{ status: { $ne: true } }, { status: true, user: requesterId }] }
-      : { status: { $ne: true } };
-
-    const posts = await PostModel.find(filter)
+    const posts = await PostModel.find()
       .sort({ createdAt: -1 })
       .populate("user")
+      .populate("comments.user")
       .exec();
 
     res.json(posts);
@@ -149,6 +106,132 @@ export const getAll = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Не удалось получить статьи",
+    });
+  }
+};
+
+export const addComment = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const text = (req.body.text || "").trim();
+
+    if (!text) {
+      return res.status(400).json({
+        message: "Комментарий не может быть пустым",
+      });
+    }
+
+    const post = await PostModel.findOneAndUpdate(
+      { _id: postId },
+      { $push: { comments: { text, user: req.userId } } },
+      { returnDocument: "after" }
+    )
+      .populate("user")
+      .populate("comments.user");
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+
+    res.json(post);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось добавить комментарий",
+    });
+  }
+};
+
+export const updateComment = async (req, res) => {
+  try {
+    const { id: postId, commentId } = req.params;
+    const text = (req.body.text || "").trim();
+
+    if (!text) {
+      return res.status(400).json({
+        message: "Комментарий не может быть пустым",
+      });
+    }
+
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({
+        message: "Комментарий не найден",
+      });
+    }
+
+    if (comment.user.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Нет доступа",
+      });
+    }
+
+    const updated = await PostModel.findOneAndUpdate(
+      { _id: postId, "comments._id": commentId },
+      { $set: { "comments.$.text": text } },
+      { returnDocument: "after" }
+    )
+      .populate("user")
+      .populate("comments.user");
+
+    res.json(updated);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось обновить комментарий",
+    });
+  }
+};
+
+export const removeComment = async (req, res) => {
+  try {
+    const { id: postId, commentId } = req.params;
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Статья не найдена",
+      });
+    }
+
+    const comment = post.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({
+        message: "Комментарий не найден",
+      });
+    }
+
+    if (comment.user.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Нет доступа",
+      });
+    }
+
+    const updated = await PostModel.findOneAndUpdate(
+      { _id: postId },
+      { $pull: { comments: { _id: commentId } } },
+      { returnDocument: "after" }
+    )
+      .populate("user")
+      .populate("comments.user");
+
+    res.json(updated);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось удалить комментарий",
     });
   }
 };
@@ -161,7 +244,6 @@ export const create = async (req, res) => {
       imageUrl: req.body.imageUrl,
       tags: req.body.tags,
       user: req.userId,
-      status: req.body.status,
     });
 
     const post = await doc.save();

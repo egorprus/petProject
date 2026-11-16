@@ -18,7 +18,17 @@ export const BankList = ({ grouped, onEdit, onDelete }: Props) => (
     {grouped.map(({ year, months }) => (
       <Collapsible
         key={year}
-        title={year}
+        title={
+          <span className={styles.monthTitleContent}>
+            {year}
+            <span className={styles.monthExpected}>
+              expected: {months.reduce((sum, { items }) => sum + Number(items[0].item.expected), 0)}
+            </span>
+            <span className={styles.monthExpected}>
+              received: <MonthReceivedTotal items={months.flatMap(({ items }) => items)} />
+            </span>
+          </span>
+        }
         as="h2"
         className={styles.yearGroup}
         titleClassName={styles.yearTitle}

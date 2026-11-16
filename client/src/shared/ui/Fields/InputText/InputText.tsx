@@ -5,8 +5,10 @@ import "./style.scss";
 interface Props {
   register: UseFormRegisterReturn<string>;
   inputProcessing?: any;
+  autoFocus?: boolean;
+  type?: "text" | "password" | "email";
 }
-export const InputText = ({ register, inputProcessing }: Props) => {
+export const InputText = ({ register, inputProcessing, autoFocus, type = "text" }: Props) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     let validationValue = e.target.value;
     if (inputProcessing) {
@@ -23,8 +25,9 @@ export const InputText = ({ register, inputProcessing }: Props) => {
     <input
       className="field__input"
       {...register}
-      type="text"
+      type={type}
       onChange={handleChange}
+      autoFocus={autoFocus}
     />
   );
 };

@@ -1,3 +1,4 @@
+import dns from "dns";
 import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
@@ -7,19 +8,30 @@ import crypto from "crypto";
 import { fileURLToPath } from "url";
 import { config } from "dotenv";
 
+// VPN adapters can push an unreliable DNS server that times out on SRV lookups
+// used by mongodb+srv:// connection strings, so pin Node's resolver explicitly.
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 config({ path: path.resolve(__dirname, "../.env") });
 import {
   registerValidation,
   loginValidation,
   postCreateValidation,
+  updateMeValidation,
+  changePasswordValidation,
 } from "./validations/validations.js";
-import { handleValidationErrors, checkAuth } from "./utils/index.js";
+import {
+  handleValidationErrors,
+  checkAuth,
+  handleAvatarUpload,
+} from "./utils/index.js";
 import {
   PostController,
   UserController,
   BankController,
   CalendarController,
+  MovieController,
 } from "./controllers/index.js";
 
 mongoose
@@ -42,6 +54,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+// Express 5 leaves req.body undefined for requests without a JSON body; controllers expect an object.
+app.use((req, _, next) => {
+  req.body ??= {};
+  next();
+});
 app.use(cors());
 
 app.post("/login", handleValidationErrors, UserController.login);
@@ -52,7 +69,24 @@ app.post(
   UserController.register
 );
 app.get("/auth/me", checkAuth, UserController.getMe);
+app.patch(
+  "/auth/me",
+  checkAuth,
+  updateMeValidation,
+  handleValidationErrors,
+  UserController.updateMe
+);
+app.patch(
+  "/auth/me/password",
+  checkAuth,
+  changePasswordValidation,
+  handleValidationErrors,
+  UserController.changePassword
+);
+app.post("/auth/me/avatar", checkAuth, handleAvatarUpload, UserController.uploadAvatar);
+app.get("/pages", checkAuth, UserController.getPages);
 app.get("/user/:id", checkAuth, UserController.getUser);
+app.get("/user/:id/avatar", UserController.getAvatar);
 
 app.post(
   "/posts",
@@ -71,6 +105,9 @@ app.patch(
   handleValidationErrors,
   PostController.update
 );
+app.post("/posts/:id/comments", checkAuth, PostController.addComment);
+app.patch("/posts/:id/comments/:commentId", checkAuth, PostController.updateComment);
+app.delete("/posts/:id/comments/:commentId", checkAuth, PostController.removeComment);
 
 app.get("/bank-records", checkAuth, BankController.getAll);
 app.post("/bank-records", checkAuth, BankController.create);
@@ -82,6 +119,15 @@ app.post("/calendar-events", checkAuth, CalendarController.create);
 app.patch("/calendar-events/:id", checkAuth, CalendarController.update);
 app.delete("/calendar-events/:id", checkAuth, CalendarController.remove);
 
+app.get("/movie-records", checkAuth, MovieController.getAll);
+app.post("/movie-records", checkAuth, MovieController.create);
+app.patch("/movie-records/:id", checkAuth, MovieController.update);
+app.delete("/movie-records/:id", checkAuth, MovieController.remove);
+
+app.get("/movie-records/share-link", checkAuth, MovieController.getShareLink);
+app.post("/movie-records/share-link/regenerate", checkAuth, MovieController.regenerateShareLink);
+app.get("/movie-records/shared/:token", MovieController.getShared);
+
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.json({
     url: `uploads/${req.file.filename}`,
@@ -89,10 +135,12 @@ app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
 });
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
-app.get("*", (_, res) => {
+app.get("/{*splat}", (_, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
-app.listen(process.env.PORT || 8080, () => {
+app.listen(process.env.PORT || 8080, (err) => {
+  // Express 5 calls this callback with the error (e.g. port in use) instead of throwing
+  if (err) throw err;
   console.log("server ok");
 });

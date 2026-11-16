@@ -1,13 +1,50 @@
 .field__checkbox-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 10px;
+  font-size: 15px;
   cursor: pointer;
+  user-select: none;
 }
 
 .field__checkbox {
-  accent-color: #28ce97;
+  appearance: none;
+  flex-shrink: 0;
+  display: grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 2px solid #c9c9c9;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  // check mark
+  &::after {
+    content: "";
+    width: 5px;
+    height: 10px;
+    margin-top: -2px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.15s;
+  }
+
+  &:hover {
+    border-color: #28ce97;
+  }
+
+  &:checked {
+    background: #28ce97;
+    border-color: #28ce97;
+
+    &::after {
+      transform: rotate(45deg) scale(1);
+    }
+  }
 
   &:focus-visible {
     outline: 2px solid #28ce97;

@@ -1,22 +1,13 @@
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "@app/store";
 import { PostsList } from "@shared/ui/Posts/PostsList";
-import { startFetchPosts } from "@features/posts/postSlice";
 import { PostActionAdd } from "@features/posts/PostActionAdd";
 import { Spinner } from "@shared/ui/Spinner/Spinner";
 import styles from "./style.module.scss";
+import { useGetPostsQuery } from "@features/posts/postsApi";
 
 export const MainPage = () => {
-  const dispatch = useAppDispatch();
-  const { data } = useSelector((state: RootState) => state.user);
-  const { posts } = useSelector((state: RootState) => state.post);
+  const { data: posts = [], isLoading } = useGetPostsQuery();
 
-  useEffect(() => {
-    dispatch(startFetchPosts());
-  }, []);
-
-  if (!data) {
+  if (isLoading) {
     return <Spinner />;
   }
 
@@ -26,7 +17,7 @@ export const MainPage = () => {
         <h1>Notes</h1>
         <PostActionAdd />
       </div>
-      <PostsList posts={posts.items} />
+      <PostsList posts={posts} />
     </section>
   );
 };

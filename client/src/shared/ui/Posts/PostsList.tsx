@@ -1,19 +1,17 @@
-import { Post } from "./Post";
+import { PostCard } from "./PostCard";
 import { PostItem } from "@shared/types/types";
 
 interface Props {
-  posts: PostItem[]
+  posts: PostItem[];
 }
 export const PostsList = ({ posts }: Props) => {
   return (
-    <>
-      <ul className="posts">
-        {posts.map((item: PostItem) => (
-          <li className="posts__item" key={item._id}>
-            <Post post={item} />
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul className="posts">
+      {posts.map((item: PostItem) => (
+        <li className="posts__item" key={item._id}>
+          <PostCard post={item} />
+        </li>
+      ))}
+    </ul>
   );
 };

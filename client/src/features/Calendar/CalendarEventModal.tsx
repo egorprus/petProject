@@ -18,8 +18,8 @@ interface Props {
   initialDate: Date | null;
   dayEvents: CalendarEventFormData[];
   onClose: () => void;
-  onCreate: (data: CalendarEventFormData) => void;
-  onUpdate: (id: string, data: CalendarEventFormData) => void;
+  onCreate: (data: CalendarEventFormData) => Promise<void> | void;
+  onUpdate: (id: string, data: CalendarEventFormData) => Promise<void> | void;
   onDelete: (id: string) => void;
 }
 
@@ -58,7 +58,7 @@ export const CalendarEventModal = ({
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CalendarEventFormData>();
 
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -96,11 +96,11 @@ export const CalendarEventModal = ({
     setValue(RequiredFields.endDate, date ? date.toISOString() : "");
   };
 
-  const onSubmit: SubmitHandler<CalendarEventFormData> = (data) => {
+  const onSubmit: SubmitHandler<CalendarEventFormData> = async (data) => {
     if (editingId) {
-      onUpdate(editingId, data);
+      await onUpdate(editingId, data);
     } else {
-      onCreate(data);
+      await onCreate(data);
     }
     reset();
     setEditingId(null);
@@ -168,8 +168,8 @@ export const CalendarEventModal = ({
         </FieldWrapper>
         <CheckboxField label={FIELDS.isRecurring.label} register={register(FIELDS.isRecurring.name)} />
         <div className={styles.actions}>
-          <DefaultButton type={ButtonTypes.submit} label={editingId ? "Update" : "Save"} />
-          <DefaultButton type={ButtonTypes.button} label="Close" handleClick={onClose} />
+          <DefaultButton type={ButtonTypes.submit} label={editingId ? "Update" : "Save"} disabled={isSubmitting} />
+          <DefaultButton type={ButtonTypes.button} label="Close" handleClick={onClose} disabled={isSubmitting} />
         </div>
       </form>
     </Modal>

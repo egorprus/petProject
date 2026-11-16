@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { JSX, ReactNode, useState } from "react";
 
 interface Props {
   title: ReactNode;
